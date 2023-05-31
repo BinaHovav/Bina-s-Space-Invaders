@@ -2,6 +2,7 @@
 const LASER_SPEED = 80
 
 var gHero
+var gLaserInterval
 
 function createHero(board) {
   gHero = {
@@ -9,54 +10,92 @@ function createHero(board) {
     isShoot: false,
   }
   board[gHero.location.i][gHero.location.j].gameObject = HERO
-  console.log('gHero.location', gHero.location)
-  console.log('HERO', HERO)
   //   gGame.foodCount--
 }
 
 function onMoveHero(ev) {
   if (!gGame.isOn) return
+  // if (gHero.isShoot) return
 
-  const nextLocation = getNextLocation(ev)
-  const currLocation = gHero.location
-  const nextCell = gBoard[nextLocation.i][nextLocation.j]
+  const nextHeroLocation = getNextLocation(ev)
+  const currHeroLocation = gHero.location
+  const nextCellObject = gBoard[nextHeroLocation.i][nextHeroLocation.j]
 
-  console.log('nextLocation', nextLocation)
+  console.log('nextHeroLocation', nextHeroLocation)
+  console.log('currHeroLocation', currHeroLocation)
+  console.log('nextCellObject', nextCellObject)
   //   if (!nextLocation) return // CHECK WHAT DOES THIS MEAN
 
-  if (nextLocation.j === BOARD_SIZE || nextLocation.j === -1) {
-    return
+  if (nextHeroLocation.j === BOARD_SIZE || nextHeroLocation.j === -1) return
+
+  updateCell(currHeroLocation, null)
+  gHero.location = nextHeroLocation
+  updateCell(nextHeroLocation, HERO)
+  // console.log('gBoardAfterMove', gBoard)
+
+  if (ev.code === 'Space') {
+    updateCell(currHeroLocation, HERO)
+    updateCell(nextHeroLocation, LASER)
+
+    shoot()
+    // console.log('space')
+    // blinkLaser(nextLaserLocation, ev)
   }
-  console.log('nextCell', nextCell)
-  console.log('gHero.location', gHero.location)
+  // const nextLaserLocation = getNextLocation(ev)
+  // console.log('nextLaserLocation', nextLaserLocation)
 
-  updateCell(currLocation, null)
-  gHero.location = nextLocation
-  updateCell(nextLocation, HERO)
-
-  // renderBoard(gBoard)
-  // return if cannot move
-  //   if (nextCell === WALL) return
-
-  //   // hitting a ghost? call gameOver
-  //   if (nextCell === GHOST) {
-  //     if (gPacman.isSuper) {
-  //       killGhost(nextLocation)
-  //     } else {
-  //       gameOver()
-  //       return
-  //     }
-  //   } else if (nextCell === FOOD) {
-  //     handleFood()
-  //   } else if (nextCell === POWER_FOOD) {
-  //     if (gPacman.isSuper) return
-  //     handlePowerFood()
-  //   } else if (nextCell === CHERRY) {
-  //     updateScore(10)
-  //   }
-
-  console.log('gBoardAfterMove', gBoard)
+  // blinkLaser(nextHeroLocation, ev)
+  // console.log('nextLaserLocation', temp)
 }
+
+// Sets an interval for shutting (blinking) the laser up towards aliens
+function shoot() {
+  console.log('shoot')
+  if (gLaserInterval !== null) return
+
+  // gLaserInterval = setInterval(function () {
+  const laserLocation = getNextLocation('Space')
+  console.log('laserLocation', laserLocation)
+
+  gLaserInterval = setInterval(function () {
+    blinkLaser(laserLocation)
+    // }, 1000)
+
+    laserLocation.i--
+    if (laserLocation.i <= 0) {
+      clearInterval(gLaserInterval)
+      gLaserInterval = null
+    }
+  }, LASER_SPEED)
+}
+
+// renders a LASER at specific cell for short time and removes it
+function blinkLaser(location) {
+  var nextLaserLocation = { i: location.i - 1, j: location.j }
+  updateCell(location, null)
+  updateCell(nextLaserLocation, LASER)
+
+  //   var currLaserLocation = { i: location.i - 1, j: location.j }
+  //   console.log('currLaserLocation', currLaserLocation)
+
+  //   const laserInterval = setInterval(function () {
+  //     updateCell(currLaserLocation, null)
+  //     currLaserLocation.i--
+
+  //     if (currLaserLocation.i >= 0) {
+  //       updateCell(currLaserLocation, LASER)
+  //     } else {
+  //       clearInterval(laserInterval)
+  //     }
+  //   }, LASER_SPEED)
+}
+// if (nextLocation.gameObject === ALIEN) {
+//   console.log('you hit an alien!')
+//   return
+// }
+//   updateCell(location, null)
+//   updateCell(nextLaserLocation, LASER)
+// }
 
 function getNextLocation(eventKeyboard) {
   const nextLocation = {
@@ -70,25 +109,12 @@ function getNextLocation(eventKeyboard) {
     case 'ArrowLeft':
       nextLocation.j--
       break
+    case 'Space':
+      // gHero.isShoot = true
+      if (nextLocation.i > 0) {
+        nextLocation.i--
+      }
+      break
   }
   return nextLocation
 }
-
-// function getPacmanHTML(deg) {
-//   return `<div style="transform: rotate(${deg}deg)">${PACMAN}</div>`
-// }
-
-// function handleFood() {
-//   gGame.foodCount--
-//   updateScore(1)
-//   checkVictory()
-// }
-
-// function handlePowerFood() {
-//   gPacman.isSuper = true
-//   renderGhosts()
-//   setTimeout(() => {
-//     gPacman.isSuper = false
-//     renderGhosts()
-//   }, 5000)
-// }

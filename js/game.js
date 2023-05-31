@@ -7,7 +7,7 @@ const ALIENS_ROW_COUNT = 3
 const HERO = '🔱'
 const LASER = '&#8593;'
 const SKY = 'SKY'
-const EARTH = 'EARTH'
+const GROUND = 'GROUND'
 const EMPTY = ''
 
 var gBoard
@@ -23,6 +23,7 @@ function onInit() {
   createAliens(gBoard)
   createHero(gBoard)
   renderBoard(gBoard, '.board-container')
+  gLaserInterval = null
 
   //   closeModal()
 }
@@ -33,11 +34,8 @@ function buildBoard() {
     board.push([])
     for (var j = 0; j < BOARD_SIZE; j++) {
       board[i][j] = createCell()
-      //   gGame.aliensCount++
       if (i === BOARD_SIZE - 1) {
-        // console.log('BOARD_SIZE.length', BOARD_SIZE.length)
-        board[i][j].type = EARTH
-        // gGame.foodCount--
+        board[i][j].type = GROUND
       }
       if (i === 0 || i === 1 || i === 2) {
         board[i][j].gameObject = ALIEN
@@ -71,9 +69,7 @@ function createCell(gameObject = null) {
 function updateCell(location, gameObject = null) {
   gBoard[location.i][location.j].gameObject = gameObject //moving from current location
   var elCell = getElCell(location)
-  console.log('elCell: ', elCell)
   elCell.innerHTML = gameObject || ''
-  console.log('elCell.innerHTML', elCell.innerHTML)
 }
 
 function getElCell(location) {
@@ -87,7 +83,7 @@ function renderBoard(board) {
     for (var j = 0; j < board[0].length; j++) {
       const currCell = board[i][j]
       var cellClass = getClassName({ i: i, j: j }) + ' ' // 'cell-0-0 '
-      cellClass += currCell.type === SKY ? 'sky' : 'earth' // 'cell-0-0 wall'
+      cellClass += currCell.type === SKY ? 'sky' : 'ground' // 'cell-0-0 wall'
 
       strHTML += `<td class="cell ${cellClass}">`
 
