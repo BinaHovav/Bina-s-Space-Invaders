@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css?family=Acme:300,400');
+
+body {
+  font-family: 'acme';
+  background-color: beige;
+  color: black;
+  text-align: center;
+}
+
+table {
+  margin: auto;
+  border-collapse: collapse;
+
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  font-size: 1.5em;
+  border: 2px solid purple;
+}
+
+.cell img {
+  height: 30px;
+}
+
+.sky {
+  background-color: lightblue;
+}
+
+.earth {
+  background-color: brown;
+}
+.modal {
+  display: none;
+  border: solid 3px grey;
+  width: 300px;
+  height: 200px;
+  background-color: rgb(222, 226, 228);
+  color: black;
+  font-size: 32px;
+
+  position: absolute;
+  top: 200px;
+  left: calc(50% - 150px);
+}
+
+.restart-btn {
+  margin-top: 20px;
+  background-color: black;
+  color: rgb(230, 221, 221);
+  padding: 10px;
+  cursor: pointer;
+}
