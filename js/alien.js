@@ -5,6 +5,11 @@ const ALIEN = '👽'
 var gAliens
 var gIntervalAliens
 
+var gAliensTopRowIdx
+var gAliensBottomRowIdx
+
+var gIsAlienFreeze = true
+
 function createAlien(board) {
   var alien = {
     id: makeId(),

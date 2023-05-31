@@ -18,13 +18,23 @@ function onMoveHero(ev) {
   if (!gGame.isOn) return
 
   const nextLocation = getNextLocation(ev)
+  const currLocation = gHero.location
+  const nextCell = gBoard[nextLocation.i][nextLocation.j]
+
   console.log('nextLocation', nextLocation)
   //   if (!nextLocation) return // CHECK WHAT DOES THIS MEAN
 
-  if (nextLocation.j === BOARD_SIZE || nextLocation.j === -1) return
-  const nextCell = gBoard[nextLocation.i][nextLocation.j]
+  if (nextLocation.j === BOARD_SIZE || nextLocation.j === -1) {
+    return
+  }
   console.log('nextCell', nextCell)
   console.log('gHero.location', gHero.location)
+
+  updateCell(currLocation, null)
+  gHero.location = nextLocation
+  updateCell(nextLocation, HERO)
+
+  // renderBoard(gBoard)
   // return if cannot move
   //   if (nextCell === WALL) return
 
@@ -45,19 +55,6 @@ function onMoveHero(ev) {
   //     updateScore(10)
   //   }
 
-  updateCell(nextLocation, HERO)
-  // moving from current location:
-  // update the model
-  // gBoard[gHero.location.i][gHero.location.j].gameObject = null
-  // // update the DOM
-  // renderCell(gHero.location, EMPTY)
-
-  // // Move the pacman to new location:
-  // // update the model
-  // gHero.location = nextLocation
-  // gBoard[nextLocation.i][nextLocation.j].gameObject = HERO
-  // // update the DOM
-  // renderCell(nextLocation, HERO)
   console.log('gBoardAfterMove', gBoard)
 }
 

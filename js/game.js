@@ -69,10 +69,11 @@ function createCell(gameObject = null) {
 
 // position such as: {i: 2, j: 7}
 function updateCell(location, gameObject = null) {
-  gBoard[location.i][location.j].gameObject = gameObject
+  gBoard[location.i][location.j].gameObject = gameObject //moving from current location
   var elCell = getElCell(location)
   console.log('elCell: ', elCell)
   elCell.innerHTML = gameObject || ''
+  console.log('elCell.innerHTML', elCell.innerHTML)
 }
 
 function getElCell(location) {
