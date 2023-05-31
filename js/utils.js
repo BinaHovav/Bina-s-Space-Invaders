@@ -1,30 +1,15 @@
 'use strict'
 
-function renderBoard(mat, selector) {
-  var strHTML = '<table border="0"><tbody>'
-  for (var i = 0; i < mat.length; i++) {
-    strHTML += '<tr>'
-    for (var j = 0; j < mat[0].length; j++) {
-      const cell = mat[i][j]
-      const className = `cell cell-${i}-${j}`
-
-      strHTML += `<td class="${className}">${cell}</td>`
-    }
-    strHTML += '</tr>'
-  }
-  strHTML += '</tbody></table>'
-
-  const elContainer = document.querySelector(selector)
-  elContainer.innerHTML = strHTML
+// position such as: {i: 2, j: 7}
+function updateCell(location, gameObject = null) {
+  gBoard[location.i][location.j].gameObject = gameObject //moving from current location
+  var elCell = getElCell(location)
+  elCell.innerHTML = gameObject || ''
 }
 
-// location is an object like this - { i: 2, j: 7 }
-// function renderCell(location, value) {
-//   // Select the elCell and set the value
-//   const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
-//   elCell.innerHTML = value
-// }
-
+function getElCell(location) {
+  return document.querySelector(`.cell-${location.i}-${location.j}`)
+}
 function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }

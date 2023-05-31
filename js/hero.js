@@ -31,21 +31,13 @@ function onMoveHero(ev) {
   updateCell(currHeroLocation, null)
   gHero.location = nextHeroLocation
   updateCell(nextHeroLocation, HERO)
-  // console.log('gBoardAfterMove', gBoard)
 
   if (ev.code === 'Space') {
     updateCell(currHeroLocation, HERO)
     updateCell(nextHeroLocation, LASER)
 
     shoot()
-    // console.log('space')
-    // blinkLaser(nextLaserLocation, ev)
   }
-  // const nextLaserLocation = getNextLocation(ev)
-  // console.log('nextLaserLocation', nextLaserLocation)
-
-  // blinkLaser(nextHeroLocation, ev)
-  // console.log('nextLaserLocation', temp)
 }
 
 // Sets an interval for shutting (blinking) the laser up towards aliens
@@ -53,49 +45,50 @@ function shoot() {
   console.log('shoot')
   if (gLaserInterval !== null) return
 
-  // gLaserInterval = setInterval(function () {
   const laserLocation = getNextLocation('Space')
   console.log('laserLocation', laserLocation)
+  // const nextLaserLocation = { i: location.i - 1, j: location.j }
+
+  var firstAlien = null // an object of the Alien I want to kill
+  console.log('firstAlien', firstAlien)
 
   gLaserInterval = setInterval(function () {
     blinkLaser(laserLocation)
-    // }, 1000)
-
     laserLocation.i--
+    // const nextCellObject = gBoard[laserLocation.i - 1][laserLocation.j]
+    // console.log('nextCellObject99', nextCellObject)
+
+    // console.log('gBoard999', gBoard)
+
     if (laserLocation.i <= 0) {
       clearInterval(gLaserInterval)
       gLaserInterval = null
+    }
+
+    if (nextCellObject.gameObject === ALIEN) {
+      console.log('you hit an alien')
+
+      // }else{
+
+      // }
+      // firstAlien = nextCellObject
+      // console.log('firstAlienAfterShoot', firstAlien)
+      // nextCellObject.gameObject = LASER
+      // updateCell(laserLocation, null)
+      // updateCell(nextLaserLocation, LASER)
+      // console.log('gBoard99', gBoard)
+      // clearInterval(gLaserInterval)
+      // gLaserInterval = null
     }
   }, LASER_SPEED)
 }
 
 // renders a LASER at specific cell for short time and removes it
 function blinkLaser(location) {
-  var nextLaserLocation = { i: location.i - 1, j: location.j }
+  const nextLaserLocation = { i: location.i - 1, j: location.j }
   updateCell(location, null)
   updateCell(nextLaserLocation, LASER)
-
-  //   var currLaserLocation = { i: location.i - 1, j: location.j }
-  //   console.log('currLaserLocation', currLaserLocation)
-
-  //   const laserInterval = setInterval(function () {
-  //     updateCell(currLaserLocation, null)
-  //     currLaserLocation.i--
-
-  //     if (currLaserLocation.i >= 0) {
-  //       updateCell(currLaserLocation, LASER)
-  //     } else {
-  //       clearInterval(laserInterval)
-  //     }
-  //   }, LASER_SPEED)
 }
-// if (nextLocation.gameObject === ALIEN) {
-//   console.log('you hit an alien!')
-//   return
-// }
-//   updateCell(location, null)
-//   updateCell(nextLaserLocation, LASER)
-// }
 
 function getNextLocation(eventKeyboard) {
   const nextLocation = {

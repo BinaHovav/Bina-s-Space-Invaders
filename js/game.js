@@ -65,17 +65,6 @@ function createCell(gameObject = null) {
   }
 }
 
-// position such as: {i: 2, j: 7}
-function updateCell(location, gameObject = null) {
-  gBoard[location.i][location.j].gameObject = gameObject //moving from current location
-  var elCell = getElCell(location)
-  elCell.innerHTML = gameObject || ''
-}
-
-function getElCell(location) {
-  return document.querySelector(`.cell-${location.i}-${location.j}`)
-}
-
 function renderBoard(board) {
   var strHTML = ''
   for (var i = 0; i < board.length; i++) {
