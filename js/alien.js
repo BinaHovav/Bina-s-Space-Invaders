@@ -61,23 +61,27 @@ function moveAliens() {
     shiftAliensRight(gBoard)
     gAliensLeftColIdx++
     gAliensRightColIdx++
-    // gAliensBottomRowIdx--
-    // gAliensTopRowIdx--
-  }, ALIEN_SPEED)
+    if (gAliensRightColIdx >= BOARD_SIZE - 1) {
+      console.log('BOOM')
+      shiftAliensDown(gBoard)
+      gAliensTopRowIdx++
+      // console.log('gAliensTopRowIdx', gAliensTopRowIdx)
+      gAliensBottomRowIdx++
+      // console.log('gAliensBottomRowIdx', gAliensBottomRowIdx)
+    }
+  }, 1400)
 }
 
 function shiftAliensRight(board) {
   // Update Model:
   for (var i = 0; i < board.length; i++) {
     for (var j = 0; j < board[0].length; j++) {
-      // var currCell = board[i][j]
       if (board[i][j].gameObject === ALIEN) {
-        if (j === gAliensLeftColIdx && board[i][j].gameObject === ALIEN) {
+        if (j === gAliensLeftColIdx) {
           board[i][j].gameObject = null
+          j++
+          board[i][j].gameObject = ALIEN
         }
-      }
-      if (j === gAliensRightColIdx + 1 && board[i][j].gameObject === null) {
-        board[i][j].gameObject = ALIEN
       }
     }
   }
@@ -88,13 +92,18 @@ function shiftAliensRight(board) {
   for (var i = 0; i < gAliens.length; i++) {
     var currAlien = gAliens[i]
     if (
-      currAlien.location.i >= gAliensTopRowIdx &&
-      currAlien.location.i <= gAliensBottomRowIdx &&
+      // currAlien.location.i >= gAliensTopRowIdx &&
+      // currAlien.location.i <= gAliensBottomRowIdx &&
       currAlien.location.j === gAliensLeftColIdx
     ) {
       updateCell(currAlien.location, null)
       currAlien.location.j++
-    } else if (currAlien.location.i >= 0 && currAlien.location.i <= 2 && currAlien.location.j === gAliensRightColIdx) {
+    } else if (
+      currAlien.location.i >= gAliensTopRowIdx &&
+      currAlien.location.i <= gAliensBottomRowIdx
+      // &&
+      // currAlien.location.j === gAliensRightColIdx
+    ) {
       currAlien.location.j++
       updateCell(currAlien.location, ALIEN)
     }
@@ -106,12 +115,11 @@ function shiftAliensLeft(board) {
   for (var i = 0; i < board.length; i++) {
     for (var j = 0; j < board[0].length; j++) {
       if (board[i][j].gameObject === ALIEN) {
-        if (j === 0 && board[i][j].gameObject === ALIEN) {
+        if (j === gAliensRightColIdx) {
           board[i][j].gameObject = null
+          j--
+          board[i][j].gameObject = ALIEN
         }
-      }
-      if (j === 8 && board[i][j].gameObject === null) {
-        board[i][j].gameObject = ALIEN
       }
     }
   }
@@ -121,13 +129,17 @@ function shiftAliensLeft(board) {
   for (var i = 0; i < gAliens.length; i++) {
     var currAlien = gAliens[i]
     if (
-      currAlien.location.i >= gAliensTopRowIdx &&
-      currAlien.location.i <= gAliensTopRowIdx + 2 &&
+      // currAlien.location.i >= gAliensTopRowIdx &&
+      // currAlien.location.i <= gAliensBottomRowIdx &&
       currAlien.location.j === gAliensRightColIdx
     ) {
       updateCell(currAlien.location, null)
       currAlien.location.j--
-    } else if (currAlien.location.i >= 0 && currAlien.location.i <= 2 && currAlien.location.j === gAliensLeftColIdx) {
+    } else if (
+      // currAlien.location.i >= gAliensTopRowIdx &&
+      // currAlien.location.i <= gAliensBottomRowIdx &&
+      currAlien.location.j === gAliensLeftColIdx
+    ) {
       currAlien.location.j--
       updateCell(currAlien.location, ALIEN)
     }
@@ -141,10 +153,8 @@ function shiftAliensDown(board) {
       if (board[i][j].gameObject === ALIEN) {
         if (i === gAliensTopRowIdx) {
           board[i][j].gameObject = null
-          board[gAliensBottomRowIdx + 1][j].gameObject = ALIEN
-          // } else {
-          //   board[gAliensBottomRowIdx + 2][j].gameObject = ALIEN
-          // board[i][j].gameObject = null
+          i++
+          board[i][j].gameObject = ALIEN
         }
       }
     }
@@ -155,12 +165,12 @@ function shiftAliensDown(board) {
   for (var i = 0; i < gAliens.length; i++) {
     var currAlien = gAliens[i]
     if (
-      currAlien.location.i >= gAliensTopRowIdx &&
-      currAlien.location.i < gAliensBottomRowIdx &&
+      // currAlien.location.i >= gAliensTopRowIdx &&
+      // currAlien.location.i < gAliensBottomRowIdx &&
       currAlien.location.i === gAliensTopRowIdx
     ) {
       updateCell(currAlien.location, null)
-      currAlien.location.i = currAlien.location.i + ALIENS_ROW_COUNT
+      currAlien.location.i++
       // console.log('currAlien.location', currAlien.location)
     }
     if (currAlien.location.i === gAliensBottomRowIdx) {
