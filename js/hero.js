@@ -39,7 +39,7 @@ function shoot() {
   console.log('gHero.isShoot: true', gHero.isShoot)
 
   updateCell(gHero.location, HERO)
-  gLaserLocation = { i: gHero.location.i - 1, j: gHero.location.j }
+  var gLaserLocation = { i: gHero.location.i - 1, j: gHero.location.j }
   updateCell(gLaserLocation, LASER)
 
   gLaserInterval = setInterval(() => {
@@ -50,24 +50,10 @@ function shoot() {
       finishShooting()
       return
     }
-
-    const nextCellObject = gBoard[gLaserLocation.i - 1][gLaserLocation.j]
-    console.log('nextCellObject99', nextCellObject)
-
-    console.log('gLaserLocation', gLaserLocation)
+    var nextCellObject = gBoard[gLaserLocation.i - 1][gLaserLocation.j]
 
     if (nextCellObject.gameObject === ALIEN) {
-      // handleAlienHit(gLaserLocation)
-      console.log('you hit an Alien')
-      gHero.isShoot = false
-      gGame.aliensCount--
-      updateScore()
-      checkVictory()
-      clearInterval(gLaserInterval)
-      gLaserInterval = null
-      blinkLaser(gLaserLocation)
-      nextCellObject.gameObject = null
-      console.log('gBoardAfterShoot', gBoard)
+      handleAlienHit(gLaserLocation)
       return
     }
   }, LASER_SPEED)
@@ -81,26 +67,13 @@ function blinkLaser(location) {
 }
 
 function finishShooting() {
-  // console.log('you hit the top')
+  console.log('you hit the top')
   gHero.isShoot = false
-  updateCell(gLaserLocation, null)
+  console.log('gHero.isShoot: false', gHero.isShoot)
   clearInterval(gLaserInterval)
   gLaserInterval = null
 }
 
-// function handleAlienHit(location) {
-//   console.log('you hit an alien')
-//   gGame.aliensCount--
-//   gHero.isShoot = false
-//   updateScore()
-//   checkVictory()
-//   clearInterval(gLaserInterval)
-//   gLaserInterval = null
-//   blinkLaser(gLaserLocation)
-//   nextCellObject.gameObject = null
-//   // updateCell()
-//   console.log('gBoardAfterShoot', gBoard)
-// }
 function onKeyDown(ev) {
   if (!gGame.isOn) return
   if (ev.code === 'Space') shoot()
@@ -110,6 +83,8 @@ function onKeyDown(ev) {
       moveHero(1)
       break
     case 'ArrowLeft':
+      console.log('gBoardCheck', gBoard)
+      console.log('gBoardCHECK', gBoard)
       moveHero(-1)
       break
   }

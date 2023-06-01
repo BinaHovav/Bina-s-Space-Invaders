@@ -7,7 +7,6 @@ const ALIENS_ROW_COUNT = 3
 const LASER = '&#8593;'
 const SKY = 'SKY'
 const GROUND = 'GROUND'
-const EMPTY = ''
 
 var gBoard
 var gGame
@@ -27,10 +26,6 @@ function onInit() {
   console.log('gGame.aliensCount', gGame.aliensCount)
 
   gLaserInterval = null
-  gAliensTopRowIdx = 0
-  gAliensBottomRowIdx = 2 // ALIENS_ROW_COUNT-2
-  gAliensLeftColIdx = 3
-  gAliensRightColIdx = 10
   // shiftAliensRight(gBoard)
   // shiftAliensLeft(gBoard)
   // shiftAliensDown(gBoard)
@@ -95,7 +90,7 @@ function checkVictory() {
 }
 
 function gameOver() {
-  // clearInterval(gGhostsInterval)
+  clearInterval(gAliensInterval)
   gGame.isOn = false
   var msg = gGame.isVictory ? 'You Won! 🏆' : 'Game Over, Try Again'
   openModal(msg)

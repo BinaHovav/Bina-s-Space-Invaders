@@ -6,12 +6,12 @@ var gAliensInterval
 var gAliensLocations = getAlienLocations()
 var gAliens
 
-var gAliensTopRowIdx
-var gAliensBottomRowIdx
-var gAliensLeftColIdx
-var gAliensRightColIdx
-
 var gIsAlienFreeze = true
+
+var gAliensTopRowIdx = 0
+var gAliensBottomRowIdx = 2
+var gAliensLeftColIdx = 3
+var gAliensRightColIdx = 10
 
 function createAlien(board) {
   if (gAliensLocations.length === 0) {
@@ -50,8 +50,19 @@ function getAlienLocations() {
   return aliensLocations
 }
 
-function handleAlienHit(location) {} //GET BACK TO THIS LATER!!
-
+function handleAlienHit(location) {
+  console.log('you hit an Alien')
+  gHero.isShoot = false
+  console.log('gHero.isShoot: false', gHero.isShoot)
+  gGame.aliensCount--
+  updateScore()
+  checkVictory()
+  clearInterval(gLaserInterval)
+  gLaserInterval = null
+  blinkLaser(location)
+  gBoard[location.i - 1][location.j].gameObject = null
+  updateCell({ i: location.i - 1, j: location.j }, null)
+}
 // runs the interval for moving aliens side to side and down
 // it re-renders the board every time
 // when the aliens are reaching the hero row - interval stops
