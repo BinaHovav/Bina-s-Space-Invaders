@@ -57,22 +57,26 @@ function handleAlienHit(location) {} //GET BACK TO THIS LATER!!
 // when the aliens are reaching the hero row - interval stops
 function moveAliens() {
   console.log('moveAliens')
-  gAliensInterval = setInterval(function () {
+  gAliensInterval = setInterval(() => {
     shiftAliensRight(gBoard)
+    gAliensLeftColIdx++
+    gAliensRightColIdx++
+    // gAliensBottomRowIdx--
+    // gAliensTopRowIdx--
   }, ALIEN_SPEED)
 }
 
 function shiftAliensRight(board) {
   // Update Model:
-  for (var i = 0; i < board.length - 1; i++) {
-    for (var j = 0; j < board[0].length - 1; j++) {
+  for (var i = 0; i < board.length; i++) {
+    for (var j = 0; j < board[0].length; j++) {
       // var currCell = board[i][j]
       if (board[i][j].gameObject === ALIEN) {
-        if (j === 3 && board[i][j].gameObject === ALIEN) {
+        if (j === gAliensLeftColIdx && board[i][j].gameObject === ALIEN) {
           board[i][j].gameObject = null
         }
       }
-      if (j === 11 && board[i][j].gameObject === null) {
+      if (j === gAliensRightColIdx + 1 && board[i][j].gameObject === null) {
         board[i][j].gameObject = ALIEN
       }
     }
