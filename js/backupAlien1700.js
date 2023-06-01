@@ -6,12 +6,12 @@ var gAliensInterval
 var gAliensLocations = getAlienLocations()
 var gAliens
 
-var gAliensTopRowIdx
-var gAliensBottomRowIdx
-var gAliensLeftColIdx
-var gAliensRightColIdx
-
 var gIsAlienFreeze = true
+
+var gAliensTopRowIdx = 0
+var gAliensBottomRowIdx = 2
+var gAliensLeftColIdx = 3
+var gAliensRightColIdx = 10
 
 function createAlien(board) {
   if (gAliensLocations.length === 0) {
@@ -50,12 +50,25 @@ function getAlienLocations() {
   return aliensLocations
 }
 
-function handleAlienHit(location) {} //GET BACK TO THIS LATER!!
-
+function handleAlienHit(location) {
+  console.log('you hit an Alien')
+  gHero.isShoot = false
+  console.log('gHero.isShoot: false', gHero.isShoot)
+  gGame.aliensCount--
+  updateScore()
+  checkVictory()
+  clearInterval(gLaserInterval)
+  gLaserInterval = null
+  blinkLaser(location)
+  gBoard[location.i - 1][location.j].gameObject = null
+  updateCell({ i: location.i - 1, j: location.j }, null)
+}
 // runs the interval for moving aliens side to side and down
 // it re-renders the board every time
 // when the aliens are reaching the hero row - interval stops
 function moveAliens() {
+  // gIsAlienFreeze = true
+
   console.log('moveAliens')
   gAliensInterval = setInterval(() => {
     shiftAliensRight(gBoard)
@@ -70,6 +83,7 @@ function moveAliens() {
       console.log('gAliensRightColIdx', gAliensRightColIdx)
       shiftAliensLeft()
 
+      // renderBoard(gBoard)
       // gAliensTopRowIdx++
       // console.log('gAliensTopRowIdx', gAliensTopRowIdx)
       // gAliensBottomRowIdx++
@@ -94,7 +108,6 @@ function shiftAliensRight(board) {
   console.log('After Shift Right', gBoard)
 
   //Update DOM:
-
   for (var i = 0; i < gAliens.length; i++) {
     var currAlien = gAliens[i]
     if (
@@ -117,21 +130,21 @@ function shiftAliensRight(board) {
 }
 
 function shiftAliensLeft(board) {
-  console.log('gAliensRightColIdx999', gAliensRightColIdx)
-
   // Update Model:
   for (var i = 0; i < board.length; i++) {
-    for (var j = 0; j < board[0].length; j++) {
+    for (var j = 0; j < board[i].length; j++) {
       if (board[i][j].gameObject === ALIEN) {
         if (j === gAliensRightColIdx) {
           board[i][j].gameObject = null
-          j--
-          board[i][j].gameObject = ALIEN
+          board[i][j - 1].gameObject = ALIEN
+          // } else {
+          //   return
         }
       }
     }
   }
   console.log('After Shift Left', board)
+  // renderBoard(gBoard)
 
   // Update DOM:
   for (var i = 0; i < gAliens.length; i++) {
