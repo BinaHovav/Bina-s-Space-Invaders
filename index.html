@@ -8,7 +8,7 @@
     <title>Bina's Space Invaders</title>
   </head>
 
-  <body onload="onInit()" onkeydown="onMoveHero(event)">
+  <body onload="onInit()" onkeydown="onKeyDown(event)">
     <h1>Kill those Space Invaders!</h1>
     <h2>Score: <span>0</span></h2>
     <table>
@@ -19,6 +19,7 @@
       <h3 class="msg"></h3>
       <button class="restart-btn" onclick="onInit()">Play Again</button>
     </div>
+    <button class="restart-btn" onclick="onInit()">Start Again</button>
 
     <footer>©️ Made by Bina Hovav</footer>
 

@@ -10,17 +10,34 @@ function updateCell(location, gameObject = null) {
 function getElCell(location) {
   return document.querySelector(`.cell-${location.i}-${location.j}`)
 }
-function getRandomIntInclusive(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min
+
+function createCell(gameObject = null) {
+  return {
+    type: SKY,
+    gameObject: gameObject,
+  }
 }
 
-function getRandomColor() {
-  var letters = '0123456789ABCDEF'
-  var color = '#'
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)]
-  }
-  return color
+// Returns the class name for a specific cell
+function getClassName(location) {
+  const cellClass = 'cell-' + location.i + '-' + location.j
+  return cellClass
+}
+
+function openModal(msg) {
+  const elModal = document.querySelector('.modal')
+  const elSpan = elModal.querySelector('.msg')
+  elSpan.innerText = msg
+  elModal.style.display = 'block'
+}
+
+function closeModal() {
+  const elModal = document.querySelector('.modal')
+  elModal.style.display = 'none'
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min
 }
 
 function makeId(length = 3) {

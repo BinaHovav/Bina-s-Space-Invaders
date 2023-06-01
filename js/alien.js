@@ -2,127 +2,168 @@
 const ALIEN_SPEED = 500
 const ALIEN = '👽'
 
+var gAliensInterval
+var gAliensLocations = getAlienLocations()
 var gAliens
-var gIntervalAliens
 
 var gAliensTopRowIdx
 var gAliensBottomRowIdx
+var gAliensLeftColIdx
+var gAliensRightColIdx
 
 var gIsAlienFreeze = true
 
 function createAlien(board) {
+  if (gAliensLocations.length === 0) {
+    return
+  }
+  var location = gAliensLocations.shift()
+
   var alien = {
     id: makeId(),
     location: {
-      i: 2,
-      j: 6,
+      i: location.i,
+      j: location.j,
     },
-    // currCellContent: FOOD,
-    // color: getRandomColor(),
   }
   gAliens.push(alien)
-
   board[alien.location.i][alien.location.j].gameObject = ALIEN
 }
 
 function createAliens(board) {
   gAliens = []
-  for (var i = 0; i < 18; i++) {
+  for (var i = 0; i < ALIENS_ROW_LENGTH * ALIENS_ROW_COUNT; i++) {
     createAlien(board)
   }
   console.log('gAliens', gAliens)
   // gGhostsInterval = setInterval(moveGhosts, 1000)
 }
 
-function renderAliens() {}
-// function moveGhosts() {
-//   for (var i = 0; i < gGhosts.length; i++) {
-//     const ghost = gGhosts[i]
-//     moveGhost(ghost)
-//   }
-// }
+function getAlienLocations() {
+  var aliensLocations = []
+  for (var i = 0; i < ALIENS_ROW_COUNT; i++) {
+    for (var j = 3; j < ALIENS_ROW_LENGTH + 3; j++) {
+      var currLocation = { i: i, j: j }
+      aliensLocations.push(currLocation)
+    }
+  }
+  return aliensLocations
+}
 
-// function moveGhost(ghost) {
-//   const moveDiff = getMoveDiff()
-//   const nextLocation = {
-//     i: ghost.location.i + moveDiff.i,
-//     j: ghost.location.j + moveDiff.j,
-//   }
-//   const nextCell = gBoard[nextLocation.i][nextLocation.j]
+function handleAlienHit(location) {} //GET BACK TO THIS LATER!!
 
-//   // return if cannot move
-//   if (nextCell === WALL) return
-//   if (nextCell === GHOST) return
+// runs the interval for moving aliens side to side and down
+// it re-renders the board every time
+// when the aliens are reaching the hero row - interval stops
+function moveAliens() {
+  console.log('moveAliens')
+  gAliensInterval = setInterval(function () {
+    shiftAliensRight(gBoard)
+  }, ALIEN_SPEED)
+}
 
-//   // hitting a pacman? call gameOver
-//   if (nextCell === PACMAN) {
-//     if (gPacman.isSuper) return
-//     gameOver()
-//     return
-//   }
+function shiftAliensRight(board) {
+  // Update Model:
+  for (var i = 0; i < board.length - 1; i++) {
+    for (var j = 0; j < board[0].length - 1; j++) {
+      // var currCell = board[i][j]
+      if (board[i][j].gameObject === ALIEN) {
+        if (j === 3 && board[i][j].gameObject === ALIEN) {
+          board[i][j].gameObject = null
+        }
+      }
+      if (j === 11 && board[i][j].gameObject === null) {
+        board[i][j].gameObject = ALIEN
+      }
+    }
+  }
+  console.log('After Shift Right', gBoard)
 
-//   // moving from current location:
-//   // update the model (restore prev cell contents)
-//   gBoard[ghost.location.i][ghost.location.j] = ghost.currCellContent
-//   // update the DOM
-//   renderCell(ghost.location, ghost.currCellContent)
+  //Update DOM:
 
-//   // Move the ghost to new location:
-//   // update the model (save cell contents so we can restore later)
-//   ghost.currCellContent = nextCell
-//   ghost.location = nextLocation
-//   gBoard[nextLocation.i][nextLocation.j] = GHOST
-//   // update the DOM
-//   renderCell(nextLocation, getGhostHTML(ghost))
-// }
+  for (var i = 0; i < gAliens.length; i++) {
+    var currAlien = gAliens[i]
+    if (
+      currAlien.location.i >= gAliensTopRowIdx &&
+      currAlien.location.i <= gAliensBottomRowIdx &&
+      currAlien.location.j === gAliensLeftColIdx
+    ) {
+      updateCell(currAlien.location, null)
+      currAlien.location.j++
+    } else if (currAlien.location.i >= 0 && currAlien.location.i <= 2 && currAlien.location.j === gAliensRightColIdx) {
+      currAlien.location.j++
+      updateCell(currAlien.location, ALIEN)
+    }
+  }
+}
 
-// function getMoveDiff() {
-//   const randNum = getRandomIntInclusive(1, 4)
+function shiftAliensLeft(board) {
+  // Update Model:
+  for (var i = 0; i < board.length; i++) {
+    for (var j = 0; j < board[0].length; j++) {
+      if (board[i][j].gameObject === ALIEN) {
+        if (j === 0 && board[i][j].gameObject === ALIEN) {
+          board[i][j].gameObject = null
+        }
+      }
+      if (j === 8 && board[i][j].gameObject === null) {
+        board[i][j].gameObject = ALIEN
+      }
+    }
+  }
+  console.log('After Shift Left', board)
 
-//   switch (randNum) {
-//     case 1:
-//       return { i: 0, j: 1 }
-//     case 2:
-//       return { i: 1, j: 0 }
-//     case 3:
-//       return { i: 0, j: -1 }
-//     case 4:
-//       return { i: -1, j: 0 }
-//   }
-// }
+  // Update DOM:
+  for (var i = 0; i < gAliens.length; i++) {
+    var currAlien = gAliens[i]
+    if (
+      currAlien.location.i >= gAliensTopRowIdx &&
+      currAlien.location.i <= gAliensTopRowIdx + 2 &&
+      currAlien.location.j === gAliensRightColIdx
+    ) {
+      updateCell(currAlien.location, null)
+      currAlien.location.j--
+    } else if (currAlien.location.i >= 0 && currAlien.location.i <= 2 && currAlien.location.j === gAliensLeftColIdx) {
+      currAlien.location.j--
+      updateCell(currAlien.location, ALIEN)
+    }
+  }
+}
 
-// function getGhostHTML(ghost) {
-//   const color = gPacman.isSuper ? 'blue' : ghost.color
-//   return `<span style="background-color:${color};">${GHOST}</span>`
-// }
+function shiftAliensDown(board) {
+  // Update Model:
+  for (var i = 0; i < board.length; i++) {
+    for (var j = 0; j < board[0].length; j++) {
+      if (board[i][j].gameObject === ALIEN) {
+        if (i === gAliensTopRowIdx) {
+          board[i][j].gameObject = null
+          board[gAliensBottomRowIdx + 1][j].gameObject = ALIEN
+          // } else {
+          //   board[gAliensBottomRowIdx + 2][j].gameObject = ALIEN
+          // board[i][j].gameObject = null
+        }
+      }
+    }
+  }
+  console.log('After Shift Down', board)
 
-// function renderGhosts() {
-//   for (var i = 0; i < gGhosts.length; i++) {
-//     var currGhost = gGhosts[i]
-//     renderCell(currGhost.location, getGhostHTML(currGhost))
-//   }
-// }
-
-// function killGhost(location) {
-//   // console.log(gGhosts)
-//   for (var i = 0; i < gGhosts.length; i++) {
-//     var currLocation = gGhosts[i].location
-//     if (currLocation.i === location.i && currLocation.j === location.j) {
-//       const deadGhost = gGhosts.splice(i, 1)[0]
-//       console.log('deadGhost', deadGhost)
-//       checkGhostCellContent(deadGhost)
-//       setTimeout(reviveGhost, 5000, deadGhost)
-//     }
-//   }
-// }
-
-// function checkGhostCellContent(ghost) {
-//   if (ghost.currCellContent === FOOD) {
-//     handleFood()
-//     ghost.currCellContent = EMPTY
-//   }
-// }
-
-// function reviveGhost(ghost) {
-//   gGhosts.push(ghost)
-// }
+  // Update DOM:
+  for (var i = 0; i < gAliens.length; i++) {
+    var currAlien = gAliens[i]
+    if (
+      currAlien.location.i >= gAliensTopRowIdx &&
+      currAlien.location.i < gAliensBottomRowIdx &&
+      currAlien.location.i === gAliensTopRowIdx
+    ) {
+      updateCell(currAlien.location, null)
+      currAlien.location.i = currAlien.location.i + ALIENS_ROW_COUNT
+      // console.log('currAlien.location', currAlien.location)
+    }
+    if (currAlien.location.i === gAliensBottomRowIdx) {
+      console.log('hey')
+      currAlien.location.i++
+      console.log('currAlien.location', currAlien.location)
+      updateCell(currAlien.location, ALIEN)
+    }
+  }
+}

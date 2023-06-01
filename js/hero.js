@@ -1,8 +1,11 @@
 'use strict'
+
+const HERO = '🔱'
 const LASER_SPEED = 80
 
 var gHero
 var gLaserInterval
+var gLaserLocation
 
 function createHero(board) {
   gHero = {
@@ -10,75 +13,62 @@ function createHero(board) {
     isShoot: false,
   }
   board[gHero.location.i][gHero.location.j].gameObject = HERO
-  //   gGame.foodCount--
+  return gHero
 }
 
-function onMoveHero(ev) {
-  if (!gGame.isOn) return
-  // if (gHero.isShoot) return
+function moveHero(dir) {
+  //dir: right = j+1, left = j- 1
 
-  const nextHeroLocation = getNextLocation(ev)
   const currHeroLocation = gHero.location
-  const nextCellObject = gBoard[nextHeroLocation.i][nextHeroLocation.j]
-
-  console.log('nextHeroLocation', nextHeroLocation)
   console.log('currHeroLocation', currHeroLocation)
-  console.log('nextCellObject', nextCellObject)
-  //   if (!nextLocation) return // CHECK WHAT DOES THIS MEAN
+
+  const nextHeroLocation = { i: gHero.location.i, j: gHero.location.j + dir }
+  console.log('nextHeroLocation', nextHeroLocation)
 
   if (nextHeroLocation.j === BOARD_SIZE || nextHeroLocation.j === -1) return
 
-  updateCell(currHeroLocation, null)
-  gHero.location = nextHeroLocation
-  updateCell(nextHeroLocation, HERO)
-
-  if (ev.code === 'Space') {
-    updateCell(currHeroLocation, HERO)
-    updateCell(nextHeroLocation, LASER)
-
-    shoot()
-  }
+  updateCell(currHeroLocation, null) // move from cell
+  gHero.location = nextHeroLocation // updaing the current hero location
+  updateCell(nextHeroLocation, HERO) // move to cell
 }
 
 // Sets an interval for shutting (blinking) the laser up towards aliens
 function shoot() {
-  console.log('shoot')
-  if (gLaserInterval !== null) return
+  if (gLaserInterval) return // can't shoot during when laserInterval is working
+  gHero.isShoot = true
+  console.log('gHero.isShoot: true', gHero.isShoot)
 
-  const laserLocation = getNextLocation('Space')
-  console.log('laserLocation', laserLocation)
-  // const nextLaserLocation = { i: location.i - 1, j: location.j }
+  updateCell(gHero.location, HERO)
+  gLaserLocation = { i: gHero.location.i - 1, j: gHero.location.j }
+  updateCell(gLaserLocation, LASER)
 
-  var firstAlien = null // an object of the Alien I want to kill
-  console.log('firstAlien', firstAlien)
+  gLaserInterval = setInterval(() => {
+    blinkLaser(gLaserLocation)
+    gLaserLocation.i--
 
-  gLaserInterval = setInterval(function () {
-    blinkLaser(laserLocation)
-    laserLocation.i--
-    // const nextCellObject = gBoard[laserLocation.i - 1][laserLocation.j]
-    // console.log('nextCellObject99', nextCellObject)
-
-    // console.log('gBoard999', gBoard)
-
-    if (laserLocation.i <= 0) {
-      clearInterval(gLaserInterval)
-      gLaserInterval = null
+    if (gLaserLocation.i <= 0) {
+      finishShooting()
+      return
     }
 
+    const nextCellObject = gBoard[gLaserLocation.i - 1][gLaserLocation.j]
+    console.log('nextCellObject99', nextCellObject)
+
+    console.log('gLaserLocation', gLaserLocation)
+
     if (nextCellObject.gameObject === ALIEN) {
-      console.log('you hit an alien')
-
-      // }else{
-
-      // }
-      // firstAlien = nextCellObject
-      // console.log('firstAlienAfterShoot', firstAlien)
-      // nextCellObject.gameObject = LASER
-      // updateCell(laserLocation, null)
-      // updateCell(nextLaserLocation, LASER)
-      // console.log('gBoard99', gBoard)
-      // clearInterval(gLaserInterval)
-      // gLaserInterval = null
+      // handleAlienHit(gLaserLocation)
+      console.log('you hit an Alien')
+      gHero.isShoot = false
+      gGame.aliensCount--
+      updateScore()
+      checkVictory()
+      clearInterval(gLaserInterval)
+      gLaserInterval = null
+      blinkLaser(gLaserLocation)
+      nextCellObject.gameObject = null
+      console.log('gBoardAfterShoot', gBoard)
+      return
     }
   }, LASER_SPEED)
 }
@@ -90,24 +80,37 @@ function blinkLaser(location) {
   updateCell(nextLaserLocation, LASER)
 }
 
-function getNextLocation(eventKeyboard) {
-  const nextLocation = {
-    i: gHero.location.i,
-    j: gHero.location.j,
-  }
-  switch (eventKeyboard.code) {
+function finishShooting() {
+  // console.log('you hit the top')
+  gHero.isShoot = false
+  updateCell(gLaserLocation, null)
+  clearInterval(gLaserInterval)
+  gLaserInterval = null
+}
+
+// function handleAlienHit(location) {
+//   console.log('you hit an alien')
+//   gGame.aliensCount--
+//   gHero.isShoot = false
+//   updateScore()
+//   checkVictory()
+//   clearInterval(gLaserInterval)
+//   gLaserInterval = null
+//   blinkLaser(gLaserLocation)
+//   nextCellObject.gameObject = null
+//   // updateCell()
+//   console.log('gBoardAfterShoot', gBoard)
+// }
+function onKeyDown(ev) {
+  if (!gGame.isOn) return
+  if (ev.code === 'Space') shoot()
+
+  switch (ev.key) {
     case 'ArrowRight':
-      nextLocation.j++
+      moveHero(1)
       break
     case 'ArrowLeft':
-      nextLocation.j--
-      break
-    case 'Space':
-      // gHero.isShoot = true
-      if (nextLocation.i > 0) {
-        nextLocation.i--
-      }
+      moveHero(-1)
       break
   }
-  return nextLocation
 }
