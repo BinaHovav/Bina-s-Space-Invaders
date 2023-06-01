@@ -64,12 +64,18 @@ function moveAliens() {
     if (gAliensRightColIdx >= BOARD_SIZE - 1) {
       console.log('BOOM')
       shiftAliensDown(gBoard)
-      gAliensTopRowIdx++
+      gAliensLeftColIdx = 6
+      console.log('gAliensLeftColIdx', gAliensLeftColIdx)
+      gAliensRightColIdx = BOARD_SIZE - 1
+      console.log('gAliensRightColIdx', gAliensRightColIdx)
+      shiftAliensLeft()
+
+      // gAliensTopRowIdx++
       // console.log('gAliensTopRowIdx', gAliensTopRowIdx)
-      gAliensBottomRowIdx++
+      // gAliensBottomRowIdx++
       // console.log('gAliensBottomRowIdx', gAliensBottomRowIdx)
     }
-  }, 1400)
+  }, ALIEN_SPEED)
 }
 
 function shiftAliensRight(board) {
@@ -111,6 +117,8 @@ function shiftAliensRight(board) {
 }
 
 function shiftAliensLeft(board) {
+  console.log('gAliensRightColIdx999', gAliensRightColIdx)
+
   // Update Model:
   for (var i = 0; i < board.length; i++) {
     for (var j = 0; j < board[0].length; j++) {
@@ -133,11 +141,13 @@ function shiftAliensLeft(board) {
       // currAlien.location.i <= gAliensBottomRowIdx &&
       currAlien.location.j === gAliensRightColIdx
     ) {
+      console.log('blabla')
       updateCell(currAlien.location, null)
       currAlien.location.j--
     } else if (
       // currAlien.location.i >= gAliensTopRowIdx &&
-      // currAlien.location.i <= gAliensBottomRowIdx &&
+      // currAlien.location.i <= gAliensBottomRowIdx
+      // // &&
       currAlien.location.j === gAliensLeftColIdx
     ) {
       currAlien.location.j--
