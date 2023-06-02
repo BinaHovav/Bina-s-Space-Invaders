@@ -3,12 +3,12 @@ const ALIEN_SPEED = 500
 const ALIEN = '👽'
 
 var gAliensInterval
-// var gIsAlienFreeze = true
 
-var gAliensTopRowIdx = 0
-var gAliensBottomRowIdx = 2
-var gAliensLeftColIdx = 3
-var gAliensRightColIdx = 10
+var gAliensTopRowIdx
+var gAliensBottomRowIdx
+var gAliensLeftColIdx
+var gAliensRightColIdx
+// var gIsAlienFreeze = true
 
 function createAliens(board) {
   for (var i = gAliensTopRowIdx; i <= gAliensBottomRowIdx; i++) {
@@ -21,9 +21,9 @@ function createAliens(board) {
 function handleAlienHit(location) {
   console.log('you hit an Alien')
   gHero.isShoot = false
-  console.log('gHero.isShoot: false', gHero.isShoot)
   gGame.aliensCount--
-  updateScore()
+  console.log('gGame.aliensCount', gGame.aliensCount)
+  updateScore(10)
   checkVictory()
   clearInterval(gLaserInterval)
   gLaserInterval = null
@@ -37,26 +37,23 @@ function handleAlienHit(location) {
 function moveAliens() {
   // gIsAlienFreeze = true
   // console.log('moveAliens')
-  gAliensInterval = setInterval(() => {
+  if (!gGame.isOn) return
+  gAliensInterval = setInterval(function () {
     if ((gAliensRightColIdx === BOARD_SIZE - 1 && gAliensLeftColIdx === 6) || (gAliensLeftColIdx === 0 && gAliensRightColIdx === 8)) {
       shiftAliensDown(gBoard)
       gAliensTopRowIdx++
       gAliensBottomRowIdx++
     }
     if (gAliensTopRowIdx % 2 === 0) {
-      console.log('EVEN')
       shiftAliensRight(gBoard)
       gAliensLeftColIdx++
       gAliensRightColIdx++
     } else {
-      console.log('ODD')
       shiftAliensLeft(gBoard)
       gAliensLeftColIdx--
       gAliensRightColIdx--
     }
-
-    // renderBoard(gBoard)
-  }, 500)
+  }, ALIEN_SPEED)
 }
 
 function shiftAliensRight(board) {
@@ -78,12 +75,8 @@ function shiftAliensRight(board) {
   if (reachedRightEdge) {
     shiftAliensDown(board)
     shiftAliensLeft(board)
-    gAliensTopRowIdx++
-    gAliensBottomRowIdx++
-    gAliensLeftColIdx--
-    gAliensRightColIdx--
+    changeDirection(-1)
   }
-  console.log('After Shift Right', gBoard)
   renderBoard(gBoard)
 }
 
@@ -106,10 +99,7 @@ function shiftAliensLeft(board) {
   if (reachedLeftEdge) {
     shiftAliensDown(gBoard)
     shiftAliensRight(gBoard)
-    gAliensTopRowIdx++
-    gAliensBottomRowIdx++
-    gAliensLeftColIdx++
-    gAliensRightColIdx++
+    changeDirection(1)
   }
   renderBoard(gBoard)
 }
@@ -132,6 +122,32 @@ function shiftAliensDown(board) {
       }
     }
   }
-  console.log('After Shift Down', board)
   renderBoard(gBoard)
+}
+
+function changeDirection(dir) {
+  gAliensTopRowIdx++
+  gAliensBottomRowIdx++
+  gAliensLeftColIdx += dir
+  gAliensRightColIdx += dir
+}
+
+function blowUpNegs(location) {
+  console.log('gLaserLocation', gLaserLocation)
+  for (var i = location.i - 1; i <= location.i + 1; i++) {
+    if (i < 0 || i >= gBoard.length) continue
+    for (var j = location.j - 1; j <= location.j + 1; j++) {
+      if (j < 0 || j >= gBoard[0].length) continue
+      if (i === location.i && j === location.j) continue
+      // console.log('i:', i)
+      // console.log('j:', j)
+      console.log('gBoard[i][j]:', gBoard[i][j])
+      if (gBoard[i][j] === LIFE) {
+        // Update the Model:
+        gBoard[i][j] = ''
+
+        renderBoard(gBoard)
+      }
+    }
+  }
 }

@@ -1,10 +1,16 @@
 @import url('https://fonts.googleapis.com/css?family=Acme:300,400');
 
 body {
+  background-image: url(/img/bcg-img.webp);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  /* background-blend-mode: multiply; */
+  background-size: cover;
   font-family: 'acme';
-  background-color: beige;
   color: black;
   text-align: center;
+  min-height: 100vh;
 }
 
 table {

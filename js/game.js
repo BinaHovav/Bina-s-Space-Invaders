@@ -12,24 +12,25 @@ var gBoard
 var gGame
 
 function onInit() {
-  console.log('starting')
   gGame = {
     isOn: true,
-    aliensCount: 0,
     score: 0,
+    aliensCount: 0,
     isVictory: false,
   }
+  gAliensTopRowIdx = 0
+  gAliensBottomRowIdx = 2
+  gAliensLeftColIdx = 3
+  gAliensRightColIdx = 10
   gBoard = buildBoard()
   console.log('gBoard', gBoard)
   createHero(gBoard)
   createAliens(gBoard)
   renderBoard(gBoard)
-
-  gLaserInterval = null
-  // shiftAliensRight(gBoard)
-  // shiftAliensLeft(gBoard)
-  // shiftAliensDown(gBoard)
+  clearInterval(gAliensInterval)
   moveAliens()
+  gGame.score = 0
+  updateScore(0)
   closeModal()
 }
 
@@ -70,10 +71,8 @@ function renderBoard(board) {
   elBoard.innerHTML = strHTML
 }
 
-function updateScore() {
-  // Model
-  gGame.score += 10
-  // DOM
+function updateScore(num) {
+  gGame.score += num
   document.querySelector('h2 span').innerText = gGame.score
 }
 

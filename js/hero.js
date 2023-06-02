@@ -17,13 +17,11 @@ function createHero(board) {
 }
 
 function moveHero(dir) {
-  //dir: right = j+1, left = j- 1
+  //dir: right = j+1, left = j-1
 
   const currHeroLocation = gHero.location
-  console.log('currHeroLocation', currHeroLocation)
 
   const nextHeroLocation = { i: gHero.location.i, j: gHero.location.j + dir }
-  console.log('nextHeroLocation', nextHeroLocation)
 
   if (nextHeroLocation.j === BOARD_SIZE || nextHeroLocation.j === -1) return
 
@@ -36,11 +34,10 @@ function moveHero(dir) {
 function shoot() {
   if (gLaserInterval) return // can't shoot during when laserInterval is working
   gHero.isShoot = true
-  console.log('gHero.isShoot: true', gHero.isShoot)
 
-  updateCell(gHero.location, HERO)
+  // updateCell(gHero.location, HERO)
   var gLaserLocation = { i: gHero.location.i - 1, j: gHero.location.j }
-  updateCell(gLaserLocation, LASER)
+  // updateCell(gLaserLocation, LASER)
 
   gLaserInterval = setInterval(() => {
     blinkLaser(gLaserLocation)
@@ -67,24 +64,30 @@ function blinkLaser(location) {
 }
 
 function finishShooting() {
-  console.log('you hit the top')
   gHero.isShoot = false
-  console.log('gHero.isShoot: false', gHero.isShoot)
   clearInterval(gLaserInterval)
   gLaserInterval = null
 }
 
 function onKeyDown(ev) {
   if (!gGame.isOn) return
+
   if (ev.code === 'Space') shoot()
+
+  if (ev.key === 'n') {
+    console.log('n')
+    blowUpNegs(gLaserLocation)
+  }
+  if (ev.key === 'x') {
+    console.log('x')
+    superMode(gLaserLocation)
+  }
 
   switch (ev.key) {
     case 'ArrowRight':
       moveHero(1)
       break
     case 'ArrowLeft':
-      console.log('gBoardCheck', gBoard)
-      console.log('gBoardCHECK', gBoard)
       moveHero(-1)
       break
   }
