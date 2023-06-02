@@ -39,23 +39,10 @@ function moveAliens() {
   // console.log('moveAliens')
   gAliensInterval = setInterval(() => {
     if ((gAliensRightColIdx === BOARD_SIZE - 1 && gAliensLeftColIdx === 6) || (gAliensLeftColIdx === 0 && gAliensRightColIdx === 8)) {
-      // console.log('BOOM')
       shiftAliensDown(gBoard)
-      // gAliensLeftColIdx++
-      // gAliensRightColIdx--
       gAliensTopRowIdx++
       gAliensBottomRowIdx++
-      console.log('gAliensTopRowIdx', gAliensTopRowIdx)
-      console.log('gAliensBottomIdx', gAliensBottomRowIdx)
-      console.log('gAliensLeftColIdx', gAliensLeftColIdx)
-      console.log('gAliensRightColIdx', gAliensRightColIdx)
-      console.log('gBoard44', gBoard)
-
-      // renderBoard(gBoard)
-      // console.log('DOWN')
-      // console.log('gBoardCHECK', gBoard)
     }
-    // console.log('gAliensTopRowIdx', gAliensTopRowIdx)
     if (gAliensTopRowIdx % 2 === 0) {
       console.log('EVEN')
       shiftAliensRight(gBoard)
@@ -73,7 +60,7 @@ function moveAliens() {
 }
 
 function shiftAliensRight(board) {
-  // Update Model:
+  var reachedRightEdge = false
   for (var i = 0; i < board.length; i++) {
     for (var j = board[0].length - 1; j >= 0; j--) {
       if (board[i][j].gameObject === ALIEN) {
@@ -82,17 +69,26 @@ function shiftAliensRight(board) {
           j++
           board[i][j].gameObject = ALIEN
         } else {
-          return
+          reachedRightEdge = true
+          break
         }
       }
     }
+  }
+  if (reachedRightEdge) {
+    shiftAliensDown(board)
+    shiftAliensLeft(board)
+    gAliensTopRowIdx++
+    gAliensBottomRowIdx++
+    gAliensLeftColIdx--
+    gAliensRightColIdx--
   }
   console.log('After Shift Right', gBoard)
   renderBoard(gBoard)
 }
 
 function shiftAliensLeft(board) {
-  // Update Model:
+  var reachedLeftEdge = false
   for (var i = 0; i < board.length; i++) {
     for (var j = 0; j < board[0].length; j++) {
       if (board[i][j].gameObject === ALIEN) {
@@ -101,12 +97,20 @@ function shiftAliensLeft(board) {
           j--
           board[i][j].gameObject = ALIEN
         } else {
-          return
+          reachedLeftEdge = true
+          break
         }
       }
     }
   }
-  console.log('After Shift Left', board)
+  if (reachedLeftEdge) {
+    shiftAliensDown(gBoard)
+    shiftAliensRight(gBoard)
+    gAliensTopRowIdx++
+    gAliensBottomRowIdx++
+    gAliensLeftColIdx++
+    gAliensRightColIdx++
+  }
   renderBoard(gBoard)
 }
 
@@ -121,6 +125,8 @@ function shiftAliensDown(board) {
           board[i][j].gameObject = ALIEN
         } else {
           console.log('Alien Hit The ground')
+          clearInterval(gAliensInterval)
+          gAliensInterval = null
           return
         }
       }
