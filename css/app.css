@@ -33,13 +33,13 @@ table {
 }
 .modal {
   display: none;
-  border: solid 3px grey;
-  width: 300px;
+  border: solid 4px grey;
+  width: 400px;
   height: 200px;
   background-color: rgb(222, 226, 228);
   color: black;
   font-size: 32px;
-
+transition: 300ms;
   position: absolute;
   top: 200px;
   left: calc(50% - 150px);

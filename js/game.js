@@ -12,6 +12,7 @@ var gBoard
 var gGame
 
 function onInit() {
+  console.log('starting')
   gGame = {
     isOn: true,
     aliensCount: 0,
@@ -20,10 +21,9 @@ function onInit() {
   }
   gBoard = buildBoard()
   console.log('gBoard', gBoard)
-  createAliens(gBoard)
   createHero(gBoard)
+  createAliens(gBoard)
   renderBoard(gBoard)
-  console.log('gGame.aliensCount', gGame.aliensCount)
 
   gLaserInterval = null
   // shiftAliensRight(gBoard)
@@ -49,27 +49,23 @@ function buildBoard() {
 }
 
 function renderBoard(board) {
-  var strHTML = ''
+  var strHTML = '<table>'
   for (var i = 0; i < board.length; i++) {
     strHTML += '<tr>'
     for (var j = 0; j < board[0].length; j++) {
-      const currCell = board[i][j]
-      var cellClass = getClassName({ i: i, j: j }) + ' ' // 'cell-0-0 '
-      cellClass += currCell.type === SKY ? 'sky' : 'ground' // 'cell-0-0 wall'
+      const cell = board[i][j]
 
-      strHTML += `<td class="cell ${cellClass}">`
+      var cellClass = getClassName({ i: i, j: j }) + ' '
+      cellClass += cell.type === SKY ? 'sky' : 'ground'
 
-      if (currCell.gameObject === HERO) {
-        strHTML += HERO
-      } else if (currCell.gameObject === ALIEN) {
-        strHTML += ALIEN
-      } else if (currCell.gameObject === LASER) {
-        strHTML += LASER
-      }
-      strHTML += '</td>'
+      const cellObject = board[i][j].gameObject || ''
+
+      strHTML += `<td class="cell ${cellClass}"> ${cellObject}
+                  </td>`
     }
     strHTML += '</tr>'
   }
+  strHTML += '</table>'
   const elBoard = document.querySelector('.board')
   elBoard.innerHTML = strHTML
 }
