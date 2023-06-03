@@ -1,6 +1,6 @@
 'use strict'
 const ALIEN_SPEED = 500
-const ALIEN = '👽'
+const ALIEN = '&#128125;'
 
 var gAliensInterval
 
@@ -18,25 +18,8 @@ function createAliens(board) {
   }
 }
 
-function handleAlienHit(location) {
-  console.log('you hit an Alien')
-  gHero.isShoot = false
-  gGame.aliensCount--
-  console.log('gGame.aliensCount', gGame.aliensCount)
-  updateScore(10)
-  checkVictory()
-  clearInterval(gLaserInterval)
-  gLaserInterval = null
-  blinkLaser(location)
-  gBoard[location.i - 1][location.j].gameObject = null
-  updateCell({ i: location.i - 1, j: location.j }, null)
-}
-// runs the interval for moving aliens side to side and down
-// it re-renders the board every time
-// when the aliens are reaching the hero row - interval stops
 function moveAliens() {
   // gIsAlienFreeze = true
-  // console.log('moveAliens')
   if (!gGame.isOn) return
   gAliensInterval = setInterval(function () {
     if ((gAliensRightColIdx === BOARD_SIZE - 1 && gAliensLeftColIdx === 6) || (gAliensLeftColIdx === 0 && gAliensRightColIdx === 8)) {
@@ -54,6 +37,18 @@ function moveAliens() {
       gAliensRightColIdx--
     }
   }, ALIEN_SPEED)
+}
+
+function handleAlienHit(location) {
+  gHero.isShoot = false
+  gGame.aliensCount--
+  updateScore(10)
+  checkVictory()
+  clearInterval(gLaserInterval)
+  gLaserInterval = null
+  blinkLaser(location)
+  gBoard[location.i - 1][location.j].gameObject = null
+  updateCell({ i: location.i - 1, j: location.j }, null)
 }
 
 function shiftAliensRight(board) {
@@ -74,8 +69,8 @@ function shiftAliensRight(board) {
   }
   if (reachedRightEdge) {
     shiftAliensDown(board)
-    shiftAliensLeft(board)
     changeDirection(-1)
+    shiftAliensLeft(board)
   }
   renderBoard(gBoard)
 }
@@ -97,15 +92,16 @@ function shiftAliensLeft(board) {
     }
   }
   if (reachedLeftEdge) {
+    changeDirection(1)
     shiftAliensDown(gBoard)
     shiftAliensRight(gBoard)
-    changeDirection(1)
   }
   renderBoard(gBoard)
 }
 
 function shiftAliensDown(board) {
-  // Update Model:
+  var aliensHitGround = false
+
   for (var i = board.length - 1; i >= 0; i--) {
     for (var j = 0; j < board[0].length; j++) {
       if (board[i][j].gameObject === ALIEN) {
@@ -114,15 +110,34 @@ function shiftAliensDown(board) {
           i++
           board[i][j].gameObject = ALIEN
         } else {
-          console.log('Alien Hit The ground')
-          clearInterval(gAliensInterval)
-          gAliensInterval = null
-          return
+          aliensHitGround = true
+          break
         }
       }
     }
+
+    if (aliensHitGround) {
+      break
+    }
   }
+
   renderBoard(gBoard)
+
+  if (aliensHitGround) {
+    console.log('Aliens Hit The ground')
+    gGame.isVictory = false
+    gGame.lives--
+    updateLives()
+
+    if (gGame.lives >= 1) {
+      openModal(`You have ${gGame.lives} lives left`)
+    } else {
+      gameOver()
+    }
+
+    clearInterval(gAliensInterval)
+    gAliensInterval = null
+  }
 }
 
 function changeDirection(dir) {
@@ -133,19 +148,12 @@ function changeDirection(dir) {
 }
 
 function blowUpNegs(location) {
-  console.log('gLaserLocation', gLaserLocation)
   for (var i = location.i - 1; i <= location.i + 1; i++) {
     if (i < 0 || i >= gBoard.length) continue
     for (var j = location.j - 1; j <= location.j + 1; j++) {
       if (j < 0 || j >= gBoard[0].length) continue
       if (i === location.i && j === location.j) continue
-      // console.log('i:', i)
-      // console.log('j:', j)
-      console.log('gBoard[i][j]:', gBoard[i][j])
-      if (gBoard[i][j] === LIFE) {
-        // Update the Model:
-        gBoard[i][j] = ''
-
+      if (gBoard[i][j].gameObject === LASER) {
         renderBoard(gBoard)
       }
     }

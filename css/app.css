@@ -12,22 +12,34 @@ body {
   min-height: 70vh;
 }
 
+h1{
+  font-size: 50px;
+}
+
+h2{
+  font-size: 30px;
+  margin-top: 20px;
+}
+
+/* h3{
+text-align: left;} */
+
 
 table {
-  margin: auto;
   border-collapse: collapse;
+  margin: auto;
 
 }
 
 .board{
-margin-top: 100px;
-height: 80vh
+margin-top: 10px;
+height: 75vh
 }
 
 
 .cell {
-  width: 50px;
-  height: 50px;
+  width: 5vw;
+  height: 4.5vh;
   font-size: 1.5em;
   /* border: 2px solid purple; */
 }
@@ -37,31 +49,35 @@ height: 80vh
 }
 
 .sky {
-  background-color: lightblue;
+  background-color: rgb(11, 5, 41);
 }
 
 .ground {
   background-color: brown;
 }
+
+
 .modal {
   display: none;
+  align-items: center;
+  justify-content: center;
   border: solid 4px grey;
-  width: 400px;
-  height: 200px;
+  width: 45vh;
+  height: 25vh;
   background-color: rgb(222, 226, 228);
   color: black;
   font-size: 32px;
   transition: 300ms;
-  position: absolute;
-  top: 200px;
-  left: calc(50% - 150px);
+  position: fixed;
+  top: 400px;
+  left: calc(50% - 200px);
 }
 
 .restart-btn {
   width: 150px;
   font-family: acme;
   font-size: 24px;
-  margin-top: 10px;
+  margin-top: 2px;
   margin-bottom: 20px;
   background-color: rgb(11, 45, 56);
   color: rgb(230, 221, 221);

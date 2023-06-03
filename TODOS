@@ -3,15 +3,15 @@
 // Get the aliens move in the right pattern טופל
 // See if I can shorten the move aliens functions טופל
 // Shorten the renderBoard טופל
-// Make the SHOOT function nicer
-// Design the game visually
-// Fix the bug: When the LASER hits the top it doesn't disappear
+// Make the SHOOT function nicer טופל ברובו
+// Design the game visually טופל
+// Fix the bug: When the LASER hits the top it doesn't disappear טופל
 
 //  the "start again button" is not working properly
 
 // IF TIME PERMITS:
 // Super Mode
-// Blow up neighbors
+// Blow up neighbors  טופל
 // Space Candies
 // Aliens Freeze
-// Lives
+// Lives  טופל חלקית

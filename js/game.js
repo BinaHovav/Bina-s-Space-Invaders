@@ -4,7 +4,7 @@ const BOARD_SIZE = 14
 const ALIENS_ROW_LENGTH = 8
 const ALIENS_ROW_COUNT = 3
 
-const LASER = '&#8593;'
+const LASER = '⇡'
 const SKY = 'SKY'
 const GROUND = 'GROUND'
 
@@ -16,6 +16,7 @@ function onInit() {
     isOn: true,
     score: 0,
     aliensCount: 0,
+    lives: 3,
     isVictory: false,
   }
   gAliensTopRowIdx = 0
@@ -23,13 +24,11 @@ function onInit() {
   gAliensLeftColIdx = 3
   gAliensRightColIdx = 10
   gBoard = buildBoard()
-  console.log('gBoard', gBoard)
   createHero(gBoard)
   createAliens(gBoard)
   renderBoard(gBoard)
   clearInterval(gAliensInterval)
   moveAliens()
-  gGame.score = 0
   updateScore(0)
   closeModal()
 }
@@ -59,9 +58,9 @@ function renderBoard(board) {
       var cellClass = getClassName({ i: i, j: j }) + ' '
       cellClass += cell.type === SKY ? 'sky' : 'ground'
 
-      const cellObject = board[i][j].gameObject || ''
+      const cellGameObject = board[i][j].gameObject || ''
 
-      strHTML += `<td class="cell ${cellClass}"> ${cellObject}
+      strHTML += `<td class="cell ${cellClass}"> ${cellGameObject}
                   </td>`
     }
     strHTML += '</tr>'
@@ -76,18 +75,22 @@ function updateScore(num) {
   document.querySelector('h2 span').innerText = gGame.score
 }
 
+function updateLives() {
+  document.querySelector('h3 span').innerText = gGame.lives
+}
+
 function checkVictory() {
   if (gGame.aliensCount === 0) {
     gGame.isVictory = true
-    console.log('you won')
     gameOver()
   }
 }
 
 function gameOver() {
   clearInterval(gAliensInterval)
+  gAliensInterval = null
   gGame.isOn = false
-  var msg = gGame.isVictory ? 'You Won! 🏆' : 'Game Over, Try Again'
+  var msg = gGame.isVictory ? 'You Won! 🏆' : 'The aliens won ☹️'
   openModal(msg)
 }
 // function getEmptyLocation(board) {

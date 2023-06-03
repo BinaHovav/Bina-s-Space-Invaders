@@ -30,14 +30,11 @@ function moveHero(dir) {
   updateCell(nextHeroLocation, HERO) // move to cell
 }
 
-// Sets an interval for shutting (blinking) the laser up towards aliens
 function shoot() {
-  if (gLaserInterval) return // can't shoot during when laserInterval is working
+  if (gLaserInterval) return // can't shoot during laserInterval
   gHero.isShoot = true
 
-  // updateCell(gHero.location, HERO)
-  var gLaserLocation = { i: gHero.location.i - 1, j: gHero.location.j }
-  // updateCell(gLaserLocation, LASER)
+  gLaserLocation = { i: gHero.location.i - 1, j: gHero.location.j }
 
   gLaserInterval = setInterval(() => {
     blinkLaser(gLaserLocation)
@@ -48,6 +45,7 @@ function shoot() {
       return
     }
     var nextCellObject = gBoard[gLaserLocation.i - 1][gLaserLocation.j]
+    // nextCellObject.gameObject = LASER
 
     if (nextCellObject.gameObject === ALIEN) {
       handleAlienHit(gLaserLocation)
@@ -56,7 +54,6 @@ function shoot() {
   }, LASER_SPEED)
 }
 
-// renders a LASER at specific cell for short time and removes it
 function blinkLaser(location) {
   const nextLaserLocation = { i: location.i - 1, j: location.j }
   updateCell(location, null)
@@ -65,6 +62,7 @@ function blinkLaser(location) {
 
 function finishShooting() {
   gHero.isShoot = false
+  updateCell(gLaserLocation, null)
   clearInterval(gLaserInterval)
   gLaserInterval = null
 }
@@ -92,3 +90,8 @@ function onKeyDown(ev) {
       break
   }
 }
+
+// function superMode(location) {
+//   console.log('super')
+//   updateCell(location, '^')
+// }
