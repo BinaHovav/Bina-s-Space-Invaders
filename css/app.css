@@ -21,7 +21,7 @@ table {
 
 .board{
 margin-top: 100px;
-height: 100vh
+height: 80vh
 }
 
 
@@ -51,7 +51,7 @@ height: 100vh
   background-color: rgb(222, 226, 228);
   color: black;
   font-size: 32px;
-transition: 300ms;
+  transition: 300ms;
   position: absolute;
   top: 200px;
   left: calc(50% - 150px);
@@ -61,7 +61,7 @@ transition: 300ms;
   width: 150px;
   font-family: acme;
   font-size: 24px;
-  margin-top: 20px;
+  margin-top: 10px;
   margin-bottom: 20px;
   background-color: rgb(11, 45, 56);
   color: rgb(230, 221, 221);
