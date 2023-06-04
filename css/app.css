@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Acme:300,400');
 
 body {
-  background-image: url(/img/bcg-img.webp);
+  background-image: url(img/bcg-img.webp);
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
