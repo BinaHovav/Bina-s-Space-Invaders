@@ -7,7 +7,7 @@ body {
   background-position: center;
   background-size: cover;
   font-family: 'acme';
-  color: white;
+  color: rgb(54, 226, 88);
   text-align: center;
   min-height: 70vh;
 }
